@@ -1,36 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
-
-const domains = ["http://localhost:3000", "http://localhost:3001"];
-
-function messageHandler(event) {
-  if (!domains.includes(event.origin)) return;
-  const { action, key, value } = event.data;
-  if (action == "get") {
-    event.source.postMessage(
-      {
-        action: "returnData",
-        key,
-        value: localStorage.getItem("session"),
-      },
-      "*"
-    );
-  }
-}
+import { useState } from "react";
 
 function App() {
+  const [token, setToken] = useState();
+
   useEffect(() => {
-    window.addEventListener("message", messageHandler, false);
-    localStorage.setItem("session", "session123");
+    setToken(Cookies.get("token"));
   }, []);
+
+  function logout() {
+    Cookies.remove("token");
+  }
 
   return (
     <div className="App">
-      <button onClick={() => console.log(Cookies.get("session"))}>
-        Session
-      </button>
+      <h1>App 1</h1>
+      <h2>Token: {token}</h2>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
